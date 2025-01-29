@@ -5,7 +5,7 @@
 #include "CBateau.h"
 
 #define HORIZONTAL_PADDING_BOAT_PLACEMENT 1
-#define MAX_ESSAIS 100
+#define FLOTILLE_FILE "../ws/flotille.txt"
 
 class CArmada {
 private:
@@ -20,9 +20,6 @@ public:
     int getEffectif();
     void getArmadaFromFile();
     bool placerAleatoirement();
-    
-private:
-    bool testPosition(int i, int j, int taille);
 };
 
 #endif // CARMADA_H

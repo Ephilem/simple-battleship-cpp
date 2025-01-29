@@ -13,6 +13,7 @@ private:
 
 public:
     CBateau();
+    CBateau(const CBateau& bateau);
     CBateau(string nom, pair<int, int> postition, int taille);
     ~CBateau();
 

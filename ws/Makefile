@@ -45,9 +45,16 @@ compilCArmada : compilCBateau
 	$(GPP) $(SRC)/CArmada.cpp -o $(BIN)/CArmada.o -c
 
 compilTestCArmada : compilCArmada 
-	@# Précéder chaque commande d'une TABULATION
 	@echo Compilation testCArmada
 	$(GPP) $(SRC)/testCArmada.cpp $(BIN)/CArmada.o $(BIN)/CBateau.o -o $(BIN)/testCArmada.bin
+
+compilCGui: compilCBateau compilCArmada
+	@echo Compilation CGui
+	$(GPP) $(SRC)/CGui.cpp $(BIN)/CArmada.o $(BIN)/CBateau.o -o $(BIN)/CGui.o
+
+compilTestCGui: compileCGui
+	@echo Compilation testCGui
+	$(GPP) $(SRC)/CGui.cpp $(BIN)/CArmada.o $(BIN)/CBateau.o $(BIN)/CGui.o
 
 # ICI, la cible de compilation finale pour obtenir main.bin
 # A executer A LA FIN du projet en s'assurant que toutes les classes du projet compilent et s'exécutent sans erreurs !
@@ -55,5 +62,4 @@ compilTestCArmada : compilCArmada
 lanceurFinal : deleteAll compilCBateau compilCArmada compilCCoups compilCGui compilCSocket compilCClientSocket compilCServerSocket compilCJoueur compilCJoueurCli compilCJoueurServ
 	@echo Compilation lanceurFinal
 	$(GPP) $(SRC)/main.cpp $(BIN)/CBateau.o $(BIN)/CArmada.o $(BIN)/CCoups.o $(BIN)/CGui.o $(BIN)/CSocket.o $(BIN)/CClientSocket.o $(BIN)/CServerSocket.o $(BIN)/CJoueur.o $(BIN)/CJoueurCli.o $(BIN)/CJoueurServ.o -o $(BIN)/main.bin
-
 

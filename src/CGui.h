@@ -1,38 +1,11 @@
-#ifndef BIBLIOSTD_H
-#define BIBLIOSTD_H
+#ifndef CGUI_H
+#define CGUI_H
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <cstdlib>
-#include <ctime>
-#include <map>
-#include <algorithm>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <cstring>
-#include <arpa/inet.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <stdexcept>
-
-/*** CONSTANTES ***/
-// Taille de la grille
-#define TAILLE_GRILLE 11
-// Paramètres réseau
-#define MAXHOSTNAME 200
-#define MAXCONNECTIONS 5
-#define MAXRECV 500
-#define PORTCOM 8000
-#define MAXESSAIS 1000
-
-using namespace std;
-
+#include "BiblioStd.h"
+#include "CArmada.h"
+#include "CBateau.h"
+#include "CCoups.h"
+#include "CBaseJeu.h"
 
 /*** COULEUR LINUX ***/
 #define STYLE_NORMAL "0"
@@ -80,4 +53,32 @@ using namespace std;
 #define STYLED_TEXT(msg, style, color) "\033[" << style << ";" << color << "m" << msg << "\033[0m"
 #define STYLED_BG_TEXT(msg, style, color, bg) "\033[" << style << ";" << color << ";" << bg << "m" << msg << "\033[0m"
 
-#endif
+class CGui : CBaseJeu {
+private:
+    char m_grilleJou[TAILLE_GRILLE-1][TAILLE_GRILLE-1];
+    char m_grilleAdv[TAILLE_GRILLE-1][TAILLE_GRILLE-1];
+    CArmada* m_pArmada;
+    CCoups* m_pCoups;
+    
+public:
+    CGui();
+    CGui(CArmada* pArmada, CCoups* pCoups);
+    CGui(const CGui& gui);
+    virtual ~CGui();
+
+    void setArmadaCoups(CArmada* pArmada, CCoups* pCoups);
+    bool positionnerBateaux();
+    pair<int, int> choisirAttaque();
+    
+    void afficheGagne();
+    void affichePerdu();
+
+    friend ostream& operator<<(ostream& os, const CGui& gui);
+
+// Fonction privée hérité de CBaseJeu
+private:
+    virtual void remplirDeuxGrilles(ostream& os);
+    virtual void afficherLaGrille(ostringstream& os, string jouOuAdv);
+};
+
+#endif // CGUI_H

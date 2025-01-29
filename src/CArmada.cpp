@@ -3,7 +3,7 @@
 
 void CArmada::ajouterBateau(CBateau& unBat) {
     m_listeBateaux.push_back(unBat);
-} 
+}
 
 
 /**********************************************************************/
@@ -24,75 +24,109 @@ int CArmada::getNbreTotCases() {
     return tot;
 }
 
-void getArmadaFromFile() {
-    // TODO
+void CArmada::getArmadaFromFile() {
+    ifstream fileStream(FLOTILLE_FILE, ios::in);
+    
+    while (!fileStream.eof()) {
+        string line;
+        getline(fileStream, line, '\n');
+        
+        if (line.empty() || line[0] == '#') {
+            continue;
+        }
+        
+        // structure : nom nombre taille
+        istringstream temp(line);
+        string nom;
+        int nombre;
+        int taille;
+
+        temp >> nom >> nombre >> taille;
+        
+        for (int i = 0; i < nombre; i++) {
+            CBateau bateau (nom, pair(0, 0), taille);
+            ajouterBateau(bateau);
+        }
+    }
+
+    fileStream.close();
 }
 
 bool CArmada::placerAleatoirement() {
+    bool processusRater = false; // si le processus de placement a échoué
     const int nbBateau = getEffectifTotal();
     
     // pour chaque bateau
-    CBateau* bateauPlacer[getEffectifTotal()];
-    bateauPlacer[getEffectifTotal()] = {nullptr};
+    int nbBateauPlacer = 0;
+    CBateau* bateauxPlacer[getEffectifTotal()] = {};
     
     // pour chaque bateau
     for (int i = 0; i < nbBateau; i++) {
-        CBateau* bateau = getBateau(i);
-        int taille = bateau->getTaille();
+        CBateau* pBateau = getBateau(i);
+        int taille = pBateau->getTaille();
+        // cout << "placement de bateau " << pBateau->getNom() << " de taille " << taille << "(" << i << ")" << endl;
         
         // definir les bornes
         int maxX = TAILLE_GRILLE - taille; 
         int maxY = TAILLE_GRILLE - 1;
-
-        int x = rand() % maxX;
-        int y = rand() % maxY;
+        // cout << "max : " << maxX << " " << maxY << endl;
 
         bool placer = false;
         int essaie = 0;
-        while (!placer && essaie < MAX_ESSAIS) {
-                
-            
-        
-
+        while (!placer && essaie < MAXESSAIS) {    
             essaie++;
-        }
 
-    }
-    
+            int x = rand() % maxX;
+            int y = rand() % maxY;
+            // cout << "Essai " << essaie << " à " << x << " " << y << endl;
 
-    
+            // si aucun bateau n'est placé, on place le bateau
+            if (nbBateauPlacer == 0) {
+                // cout << "Placé !" << endl;
+                pBateau->setPosition(x, y);
+                bateauxPlacer[nbBateauPlacer] = pBateau;
+                nbBateauPlacer++;
+                placer = true;
+                continue;
+            }
 
+            // parcourir les bateaux déjà placés
+            bool collision = false;
+            for (int j = 0; j < nbBateauPlacer; j++) {
+                CBateau* pBateauPlacer = bateauxPlacer[j];
+                // cout << " - test avec bateau à " << pBateauPlacer->getPosition().first << " " << pBateauPlacer->getPosition().second << " de taille " << pBateauPlacer->getTaille() << endl;
 
-    return false;
-}
-
-bool CArmada::testPosition(int i, int j, int taille) {
-    bool positionCorrecte = false;
-    
-    
-    // test si le bateau est dans la grille
-    if (i >= 0 && i <= maxX && j >= 0 && j <= maxY) {
-        // pour chaque bateau...
-        int nbBateau = getEffectifTotal();
-        for (int i = 0; i < nbBateau; i++) {
-            CBateau* bateau = getBateau(i);
-            pair<int, int> pos = bateau.getPosition();
-            int taille = bateau.getTaille();
-            
-            int pad = HORIZONTAL_PADDING_BOAT_PLACEMENT;
-            int xStart = pos.first - pad;
-            int xEnd = pos.first + taille + pad;
-            
-            // check si le bateau est sur la même ligne
-            if (j == pos.second) {
-                // check collision 
-                if ((i + taille >= xStart) && (i <= xEnd)) {
-                    positionCorrecte = false;
-                    break;
+                // si meme ligne que le bateau déjà placé
+                if (y == pBateauPlacer->getPosition().second) {
+                    int xStart = pBateauPlacer->getPosition().first - HORIZONTAL_PADDING_BOAT_PLACEMENT;
+                    int xEnd = pBateauPlacer->getPosition().first + pBateauPlacer->getTaille() + HORIZONTAL_PADDING_BOAT_PLACEMENT;
+                    
+                    // check la collision
+                    if ((x + taille >= xStart) && (x <= xEnd)) {
+                        // cout << "    - Collision horizontale" << endl;
+                        collision = true;
+                        break;
+                    }
                 }
+            }        
+
+            if (!collision) {
+                // cout << "Placé !" << endl;
+                pBateau->setPosition(x, y);
+                bateauxPlacer[nbBateauPlacer] = pBateau;
+                nbBateauPlacer++;
+                placer = true;
             }
         }
+
+        if (!placer) {
+            // cout << "ERREUR : impossible de placer tout les bateaux !" << endl;
+            processusRater = true;
+            break;
+        }
     }
 
-    return positionCorrecte;
+    return processusRater;
 }
+
+/**********************************************************************/

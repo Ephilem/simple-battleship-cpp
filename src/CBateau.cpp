@@ -27,6 +27,17 @@ CBateau::CBateau(string nom, pair<int, int> position, int taille) {
     }
 }
 
+CBateau::CBateau(const CBateau& bateau) {
+    m_taille = bateau.m_taille;
+    m_nom = bateau.m_nom;
+    m_position = bateau.m_position;
+    
+    m_pDegats = new bool[m_taille];
+    for (int i = 0; i < m_taille; i++) {
+        m_pDegats[i] = bateau.m_pDegats[i];
+    }
+}
+
 /**********************************************************************/
 
 int CBateau::getTaille() {
