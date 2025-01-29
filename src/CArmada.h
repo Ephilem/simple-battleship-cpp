@@ -4,6 +4,9 @@
 #include "BiblioStd.h"
 #include "CBateau.h"
 
+#define HORIZONTAL_PADDING_BOAT_PLACEMENT 1
+#define MAX_ESSAIS 100
+
 class CArmada {
 private:
     vector<CBateau> m_listeBateaux;
@@ -17,6 +20,9 @@ public:
     int getEffectif();
     void getArmadaFromFile();
     bool placerAleatoirement();
+    
+private:
+    bool testPosition(int i, int j, int taille);
 };
 
-#endif 
+#endif // CARMADA_H

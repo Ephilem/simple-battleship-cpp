@@ -2,7 +2,7 @@
 
 #define assert_expr(expr, message) \
     { \
-        cout << " - " << "#expr" << "\t"; \
+        cout << " - " << #expr << "\t"; \
         if (expr) { \
             cout << "[OK]" << endl; \
         } else { \
@@ -20,8 +20,9 @@ int main() {
 
 void testAjouterBateau1() {
     CArmada armada = CArmada();
-    CBateau bateau = CBateau("sous-marin", pair<int, int>(0, 0), 0);
+    CBateau bateau = CBateau("sous-marin", pair<int, int>(0, 0), 2);
     armada.ajouterBateau(bateau);
-    assert_expr(armada.getEffectifTotal() == 1, "Ajout d'un bateau");
-    assert_expr(armada.getNbreTotCases() == 3, "Ajout d'un bateau");
+    
+    assert_expr(armada.getEffectifTotal() == 1);
+    assert_expr(armada.getNbreTotCases() == 2);
 }

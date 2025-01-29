@@ -18,8 +18,8 @@ CBateau::CBateau(string nom, pair<int, int> position, int taille) {
     }
     
     m_nom = nom;
-    setPosition(position.first, position.second);
     m_taille = taille;
+    setPosition(position.first, position.second);
     
     m_pDegats = new bool[taille];
     for (int i = 0; i < taille; i++) {
@@ -99,9 +99,7 @@ void CBateau::afficher() {
 
 /**********************************************************************/
 
-
 CBateau::~CBateau() {
     delete[] m_pDegats;
 }
-
 

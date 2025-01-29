@@ -14,6 +14,7 @@ private:
 public:
     CBateau();
     CBateau(string nom, pair<int, int> postition, int taille);
+    ~CBateau();
 
     // Getter
     int getTaille();
